@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Plano de Reconstrução Física</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #13131a;
+    --surface2: #1c1c26;
+    --border: #2a2a38;
+    --accent: #c8a96e;
+    --accent2: #e8c98e;
+    --green: #4caf7d;
+    --blue: #5b8dee;
+    --red: #e05c5c;
+    --text: #f0ede8;
+    --muted: #888899;
+    --radius: 16px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(160deg, #1a1508 0%, #0d0d18 60%, #0a0a0f 100%);
+    padding: 56px 24px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: 50%; transform: translateX(-50%);
+    width: 280px; height: 280px;
+    background: radial-gradient(circle, rgba(200,169,110,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .header-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid rgba(200,169,110,0.3);
+    padding: 4px 14px;
+    border-radius: 40px;
+    margin-bottom: 18px;
+  }
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 34px;
+    font-weight: 900;
+    color: var(--text);
+    line-height: 1.15;
+    margin-bottom: 12px;
+  }
+  .header h1 span { color: var(--accent); }
+  .header p {
+    font-size: 14px;
+    color: var(--muted);
+    max-width: 280px;
+    margin: 0 auto;
+  }
+
+  /* NAV PILLS */
+  .nav {
+    display: flex;
+    overflow-x: auto;
+    gap: 8px;
+    padding: 20px 20px 4px;
+    scrollbar-width: none;
+  }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav-pill {
+    flex-shrink: 0;
+    padding: 8px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 40px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .nav-pill:hover, .nav-pill.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #0a0a0f;
+    font-weight: 600;
+  }
+
+  /* SECTIONS */
+  .section {
+    padding: 32px 20px 0;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .section-icon {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .icon-gold { background: rgba(200,169,110,0.15); }
+  .icon-green { background: rgba(76,175,125,0.15); }
+  .icon-blue { background: rgba(91,141,238,0.15); }
+  .icon-red { background: rgba(224,92,92,0.15); }
+  .icon-purple { background: rgba(160,120,220,0.15); }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .section-sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 1px;
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 12px;
+  }
+  .card-title {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  /* MEALS */
+  .meal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .meal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    cursor: pointer;
+  }
+  .meal-left { display: flex; align-items: center; gap: 12px; }
+  .meal-time {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    background: rgba(200,169,110,0.1);
+    padding: 3px 8px;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+  }
+  .meal-name { font-weight: 600; font-size: 14px; }
+  .meal-cost {
+    font-size: 12px;
+    color: var(--green);
+    font-weight: 600;
+  }
+  .meal-body {
+    padding: 0 16px 14px;
+    border-top: 1px solid var(--border);
+    margin-top: 0;
+  }
+  .meal-body p {
+    font-size: 14px;
+    color: #ccc;
+    margin-top: 12px;
+    line-height: 1.5;
+  }
+
+  /* TABLE */
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    margin-bottom: 12px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  thead tr { background: var(--surface2); }
+  th {
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  td {
+    padding: 10px 14px;
+    border-top: 1px solid var(--border);
+    color: var(--text);
+  }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .td-prot { color: var(--green); font-weight: 600; }
+  .td-cost { color: var(--accent); font-weight: 600; }
+
+  /* ROUTINE TIMELINE */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px; top: 0; bottom: 0;
+    width: 1px;
+    background: var(--border);
+  }
+  .tl-item {
+    position: relative;
+    margin-bottom: 16px;
+  }
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: -24px; top: 6px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+  }
+  .tl-time {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+  }
+  .tl-action { font-size: 14px; font-weight: 500; }
+  .tl-note { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  /* WORKOUT TABLE */
+  .workout-day {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .workout-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+  }
+  .day-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 8px;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+  }
+  .badge-train { background: rgba(200,169,110,0.15); color: var(--accent); }
+  .badge-rest { background: rgba(76,175,125,0.15); color: var(--green); }
+  .day-focus { font-weight: 600; font-size: 14px; }
+  .day-exercises {
+    padding: 0 16px 14px;
+    border-top: 1px solid var(--border);
+    margin-top: 0;
+  }
+  .day-exercises p { font-size: 13px; color: var(--muted); margin-top: 10px; }
+  .exercise-tag {
+    display: inline-block;
+    font-size: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 3px 10px;
+    border-radius: 6px;
+    margin: 4px 4px 0 0;
+    color: var(--text);
+  }
+
+  /* WATER VISUAL */
+  .water-visual {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+  .water-bottle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .bottle-icon {
+    font-size: 24px;
+    filter: hue-rotate(180deg);
+  }
+  .bottle-label { font-size: 10px; color: var(--muted); text-align: center; }
+
+  /* TIPS */
+  .tip {
+    background: var(--surface);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    border-right: 1px solid var(--border);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .tip.green { border-left-color: var(--green); }
+  .tip.blue { border-left-color: var(--blue); }
+  .tip.red { border-left-color: var(--red); }
+  .tip-title {
+    font-weight: 700;
+    font-size: 13px;
+    margin-bottom: 4px;
+    color: var(--text);
+  }
+  .tip p { font-size: 13px; color: #bbb; line-height: 1.55; }
+
+  /* MACROS BAR */
+  .macro-bar {
+    background: var(--surface2);
+    border-radius: 40px;
+    height: 8px;
+    margin-top: 6px;
+    overflow: hidden;
+  }
+  .macro-fill {
+    height: 100%;
+    border-radius: 40px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+  }
+  .macro-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* SLEEP SCHEDULE */
+  .sleep-block {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+  }
+  .sleep-emoji { font-size: 28px; }
+  .sleep-title { font-weight: 600; font-size: 15px; }
+  .sleep-detail { font-size: 13px; color: var(--muted); }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 32px 20px 0;
+  }
+
+  /* HIGHLIGHT BOX */
+  .highlight {
+    background: linear-gradient(135deg, rgba(200,169,110,0.08), rgba(200,169,110,0.03));
+    border: 1px solid rgba(200,169,110,0.25);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 12px;
+  }
+  .highlight p { font-size: 14px; line-height: 1.6; color: var(--text); }
+  .highlight strong { color: var(--accent); }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    padding: 40px 20px 20px;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .footer strong { color: var(--accent); }
+
+  /* ANIMATE IN */
+  .section { animation: fadeUp 0.4s ease both; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-tag">Seu Plano Completo</div>
+  <h1>Plano de<br><span>Reconstrução</span><br>Física</h1>
+  <p>Dieta · Treino · Rotina · Disciplina</p>
+</div>
+
+<nav class="nav">
+  <a class="nav-pill active" href="#dieta">🍽 Dieta</a>
+  <a class="nav-pill" href="#marmita">📦 Marmita</a>
+  <a class="nav-pill" href="#treino">💪 Treino</a>
+  <a class="nav-pill" href="#agua">💧 Água</a>
+  <a class="nav-pill" href="#sono">😴 Sono</a>
+  <a class="nav-pill" href="#rotina">⏰ Rotina</a>
+  <a class="nav-pill" href="#disciplina">🔥 Disciplina</a>
+</nav>
+
+<!-- ===================== DIETA ===================== -->
+<div id="dieta" class="section">
+  <div class="section-header">
+    <div class="section-icon icon-gold">🍽</div>
+    <div>
+      <div class="section-title">Dieta Diária</div>
+      <div class="section-sub">Barata, rica em proteína, ~R$20–22/dia</div>
+    </div>
+  </div>
+
+  <div class="highlight">
+    <p><strong>Regra de ouro:</strong> proteína em toda refeição · carboidrato ao redor do treino · gordura boa no resto do dia. Meta: <strong>~140g de proteína/dia</strong> (para 75kg).</p>
+  </div>
+
+  <div class="meal">
+    <div class="meal-header">
+      <div class="meal-left">
+        <span class="meal-time">06h30</span>
+        <span class="meal-name">☀️ Café da manhã</span>
+      </div>
+      <span class="meal-cost">~R$3</span>
+    </div>
+    <div class="meal-body">
+      <p>3 ovos mexidos + 1 clara · Arroz (100g cozido) <em>ou</em> aveia (50g) com banana · Café preto sem açúcar</p>
+    </div>
+  </div>
+
+  <div class="meal">
+    <div class="meal-header">
+      <div class="meal-left">
+        <span class="meal-time">10h00</span>
+        <span class="meal-name">🥚 Lanche 1</span>
+      </div>
+      <span class="meal-cost">~R$2</span>
+    </div>
+    <div class="meal-body">
+      <p>2 ovos cozidos + fruta (banana ou maçã)</p>
+    </div>
+  </div>
+
+  <div class="meal">
+    <div class="meal-header">
+      <div class="meal-left">
+        <span class="meal-time">13h00</span>
+        <span class="meal-name">🍛 Almoço</span>
+      </div>
+      <span class="meal-cost">~R$5</span>
+    </div>
+    <div class="meal-body">
+      <p>150–180g frango grelhado ou cozido · Batata-doce (150g) <em>ou</em> arroz (150g) · Feijão (1 concha) · Legume refogado (cenoura, beterraba ralada, chuchu, abobrinha) · Salada crua à vontade</p>
+    </div>
+  </div>
+
+  <div class="meal">
+    <div class="meal-header">
+      <div class="meal-left">
+        <span class="meal-time">16h30</span>
+        <span class="meal-name">⚡ Pré-treino</span>
+      </div>
+      <span class="meal-cost">~R$2,50</span>
+    </div>
+    <div class="meal-body">
+      <p>Batata-doce cozida (150g) + 2 ovos cozidos <em>ou</em> atum em lata (1 lata). Não treine em jejum.</p>
+    </div>
+  </div>
+
+  <div class="meal">
+    <div class="meal-header">
+      <div class="meal-left">
+        <span class="meal-time">19h30</span>
+        <span class="meal-name">💪 Pós-treino</span>
+      </div>
+      <span class="meal-cost">~R$5</span>
+    </div>
+    <div class="meal-body">
+      <p>Arroz ou batata + frango + ovo + legume. Igual ao almoço. Pode ser a segunda marmita do dia.</p>
+    </div>
+  </div>
+
+  <div class="meal">
+    <div class="meal-header">
+      <div class="meal-left">
+        <span class="meal-time">21h30</span>
+        <span class="meal-name">🌙 Ceia</span>
+      </div>
+      <span class="meal-cost">~R$3</span>
+    </div>
+    <div class="meal-body">
+      <p>Iogurte natural integral (200g) + aveia (30g) + amendoim (20g)</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:8px;">
+    <div class="card-title">Proteínas baratas — Ranking</div>
+    <div class="table-wrap" style="margin-bottom:0; border:none; border-radius:0;">
+      <table>
+        <thead><tr><th>Alimento</th><th>Proteína</th><th>Custo</th></tr></thead>
+        <tbody>
+          <tr><td>Ovo inteiro</td><td class="td-prot">6g/un</td><td class="td-cost">Baixíssimo</td></tr>
+          <tr><td>Peito de frango</td><td class="td-prot">31g/100g</td><td class="td-cost">Baixo</td></tr>
+          <tr><td>Atum em lata</td><td class="td-prot">25g/lata</td><td class="td-cost">Baixo</td></tr>
+          <tr><td>Feijão cozido</td><td class="td-prot">8g/100g</td><td class="td-cost">Baixíssimo</td></tr>
+          <tr><td>Carne moída</td><td class="td-prot">26g/100g</td><td class="td-cost">Médio</td></tr>
+          <tr><td>Sardinha em lata</td><td class="td-prot">22g/lata</td><td class="td-cost">Baixo</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="tip green">
+    <div class="tip-title">💡 Dica: Legumes são seus aliados</div>
+    <p>Cenoura, beterraba e saladas aumentam fibra, saciedade e micronutrientes sem custo calórico. Beterraba crua tem nitrato natural que melhora circulação e performance no treino. Substitui arroz por batata-doce à vontade — funciona igual ou melhor para hipertrofia.</p>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ===================== MARMITA ===================== -->
+<div id="marmita" class="section">
+  <div class="section-header">
+    <div class="section-icon icon-green">📦</div>
+    <div>
+      <div class="section-title">Marmitas para o Trabalho</div>
+      <div class="section-sub">Monte domingo + quarta. Sem desculpa.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Marmita Base (5 dias)</div>
+    <p style="font-size:14px; color:#ccc; line-height:1.6;">Frango cozido em cubos ou desfiado · Arroz + feijão · Legume refogado (cenoura, chuchu ou abobrinha — não amolece) · Ovo cozido separado em pote pequeno</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Lanches no Trabalho</div>
+    <p style="font-size:14px; color:#ccc; line-height:1.6;">
+      🥜 Pote com amendoim (30g) + banana<br>
+      🥚 2 ovos cozidos + fruta<br>
+      🥣 Aveia em pote com iogurte (deixa de véspera)
+    </p>
+  </div>
+
+  <div class="tip blue">
+    <div class="tip-title">⚙️ Hack de prep semanal</div>
+    <p>Cozinhe 1kg de frango de uma vez. Divida em porções de 150g e congele. Você tem proteína para 6 dias sem pensar. Marmita pronta = zero chance de comer errado por falta de tempo.</p>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ===================== TREINO ===================== -->
+<div id="treino" class="section">
+  <div class="section-header">
+    <div class="section-icon icon-red">💪</div>
+    <div>
+      <div class="section-title">Divisão de Treino</div>
+      <div class="section-sub">4 dias · Iniciante–Intermediário</div>
+    </div>
+  </div>
+
+  <div class="highlight">
+    <p>3–4 séries · 8–12 repetições · 60–90s de descanso · 50–65 min por sessão. <strong>Progressão toda semana:</strong> +1 rep ou +2,5kg em algum exercício.</p>
+  </div>
+
+  <div class="workout-day">
+    <div class="workout-header">
+      <span class="day-badge badge-train">SEG</span>
+      <span class="day-focus">🏋️ Peito + Tríceps</span>
+    </div>
+    <div class="day-exercises">
+      <span class="exercise-tag">Supino reto</span>
+      <span class="exercise-tag">Supino inclinado</span>
+      <span class="exercise-tag">Crucifixo</span>
+      <span class="exercise-tag">Tríceps corda</span>
+      <span class="exercise-tag">Tríceps testa</span>
+    </div>
+  </div>
+
+  <div class="workout-day">
+    <div class="workout-header">
+      <span class="day-badge badge-train">TER</span>
+      <span class="day-focus">🔙 Costas + Bíceps</span>
+    </div>
+    <div class="day-exercises">
+      <span class="exercise-tag">Puxada alta</span>
+      <span class="exercise-tag">Remada curvada</span>
+      <span class="exercise-tag">Remada unilateral</span>
+      <span class="exercise-tag">Rosca direta</span>
+      <span class="exercise-tag">Rosca martelo</span>
+    </div>
+  </div>
+
+  <div class="workout-day">
+    <div class="workout-header">
+      <span class="day-badge badge-rest">QUA</span>
+      <span class="day-focus">🚶 Descanso / Caminhada leve</span>
+    </div>
+    <div class="day-exercises">
+      <p>Recuperação ativa. 20–30 min de caminhada se quiser. Não force.</p>
+    </div>
+  </div>
+
+  <div class="workout-day">
+    <div class="workout-header">
+      <span class="day-badge badge-train">QUI</span>
+      <span class="day-focus">🦵 Pernas</span>
+    </div>
+    <div class="day-exercises">
+      <span class="exercise-tag">Agachamento livre</span>
+      <span class="exercise-tag">Leg press</span>
+      <span class="exercise-tag">Stiff</span>
+      <span class="exercise-tag">Extensora</span>
+      <span class="exercise-tag">Flexora</span>
+      <span class="exercise-tag">Panturrilha</span>
+    </div>
+  </div>
+
+  <div class="workout-day">
+    <div class="workout-header">
+      <span class="day-badge badge-train">SEX</span>
+      <span class="day-focus">🙆 Ombro + Abdômen</span>
+    </div>
+    <div class="day-exercises">
+      <span class="exercise-tag">Desenvolvimento</span>
+      <span class="exercise-tag">Elevação lateral</span>
+      <span class="exercise-tag">Elevação frontal</span>
+      <span class="exercise-tag">Prancha</span>
+      <span class="exercise-tag">Abdominal</span>
+    </div>
+  </div>
+
+  <div class="workout-day">
+    <div class="workout-header">
+      <span class="day-badge badge-rest">SAB</span>
+      <span class="day-focus">🚴 Cardio leve opcional</span>
+    </div>
+    <div class="day-exercises">
+      <p>30 min de caminhada ou bike. Mantém o metabolismo ativo sem prejudicar recuperação.</p>
+    </div>
+  </div>
+
+  <div class="workout-day">
+    <div class="workout-header">
+      <span class="day-badge badge-rest">DOM</span>
+      <span class="day-focus">😴 Descanso total</span>
+    </div>
+    <div class="day-exercises">
+      <p>Recuperação é onde a hipertrofia acontece. Respeita o descanso.</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:4px;">
+    <div class="card-title">Pré e Pós-treino</div>
+    <div style="margin-top:4px;">
+      <p style="font-size:13px; color:var(--accent); font-weight:600; margin-bottom:6px;">⚡ PRÉ (60–90 min antes)</p>
+      <p style="font-size:14px; color:#ccc; line-height:1.55; margin-bottom:14px;">Batata-doce + ovo ou atum · Banana + amendoim (opção rápida) · Não treine em jejum para hipertrofia</p>
+      <p style="font-size:13px; color:var(--green); font-weight:600; margin-bottom:6px;">✅ PÓS (até 60 min depois)</p>
+      <p style="font-size:14px; color:#ccc; line-height:1.55;">Arroz/batata + frango + ovo (refeição completa) · Ou: ovo mexido + banana + copo de leite se estiver sem tempo · Whey ajuda na praticidade mas não é obrigatório</p>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ===================== ÁGUA ===================== -->
+<div id="agua" class="section">
+  <div class="section-header">
+    <div class="section-icon icon-blue">💧</div>
+    <div>
+      <div class="section-title">Hidratação</div>
+      <div class="section-sub">35ml por kg · 75kg = 2,6L mínimo</div>
+    </div>
+  </div>
+
+  <div class="highlight">
+    <p>Com treino intenso: <strong>3–3,5L por dia.</strong> Urina amarelo-clara = hidratado. Amarelo-escuro = beba mais agora.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Distribuição das 6 garrafas (500ml)</div>
+    <div class="timeline" style="margin-top:8px;">
+      <div class="tl-item">
+        <div class="tl-time">AO ACORDAR</div>
+        <div class="tl-action">💧 500ml — antes do café</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">MANHÃ</div>
+        <div class="tl-action">💧 500ml — entre 8h–10h</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">PRÉ-ALMOÇO</div>
+        <div class="tl-action">💧 500ml — antes da marmita</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">TARDE</div>
+        <div class="tl-action">💧 500ml — entre 14h–16h</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">TREINO</div>
+        <div class="tl-action">💧 500ml — durante a academia</div>
+      </div>
+      <div class="tl-item" style="margin-bottom:0;">
+        <div class="tl-time">NOITE</div>
+        <div class="tl-action">💧 500ml — até as 21h</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ===================== SONO ===================== -->
+<div id="sono" class="section">
+  <div class="section-header">
+    <div class="section-icon icon-purple">😴</div>
+    <div>
+      <div class="section-title">Rotina de Sono</div>
+      <div class="section-sub">É no sono que o músculo cresce. Não negocie.</div>
+    </div>
+  </div>
+
+  <div class="sleep-block">
+    <span class="sleep-emoji">🌙</span>
+    <div>
+      <div class="sleep-title">Dormir: 22h–22h30</div>
+      <div class="sleep-detail">Desligue a tela, quarto escuro</div>
+    </div>
+  </div>
+  <div class="sleep-block">
+    <span class="sleep-emoji">☀️</span>
+    <div>
+      <div class="sleep-title">Acordar: 6h–6h30</div>
+      <div class="sleep-detail">7,5–8h = 5 ciclos de 90min</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">6 técnicas para dormir melhor</div>
+    <div style="margin-top:4px;">
+      <div class="tl-item" style="padding-left:0; list-style:none;">
+        <p style="font-size:14px; color:#ccc; margin-bottom:10px;">📵 <strong style="color:var(--text);">Corta tela 45 min antes</strong> — luz azul bloqueia melatonina</p>
+        <p style="font-size:14px; color:#ccc; margin-bottom:10px;">🌡️ <strong style="color:var(--text);">Quarto frio</strong> — 18–21°C induz sono profundo</p>
+        <p style="font-size:14px; color:#ccc; margin-bottom:10px;">🚿 <strong style="color:var(--text);">Banho morno 30 min antes</strong> — a queda de temperatura do corpo acelera o sono</p>
+        <p style="font-size:14px; color:#ccc; margin-bottom:10px;">🌑 <strong style="color:var(--text);">Quarto totalmente escuro</strong> — black-out ou máscara</p>
+        <p style="font-size:14px; color:#ccc; margin-bottom:10px;">🍽️ <strong style="color:var(--text);">Sem refeição pesada depois das 21h</strong> — digestão atrapalha qualidade</p>
+        <p style="font-size:14px; color:#ccc;">⏰ <strong style="color:var(--text);">Mesmo horário todo dia</strong> — o ritmo circadiano é treinável</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip">
+    <div class="tip-title">O sono é o treino invisível</div>
+    <p>GH (hormônio do crescimento) é secretado principalmente durante o sono profundo. Negligenciar o sono é literalmente jogar fora o resultado do treino e da dieta.</p>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ===================== ROTINA ===================== -->
+<div id="rotina" class="section">
+  <div class="section-header">
+    <div class="section-icon icon-gold">⏰</div>
+    <div>
+      <div class="section-title">Rotina Diária Completa</div>
+      <div class="section-sub">Do acorde ao sono. Sem improvisos.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-time">06h00</div>
+        <div class="tl-action">Acorda. Sem rolar na cama. Levanta direto.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">06h05</div>
+        <div class="tl-action">💧 500ml de água + luz natural</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">06h10</div>
+        <div class="tl-action">☀️ Café da manhã</div>
+        <div class="tl-note">Ovos + carboidrato + café preto</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">06h30</div>
+        <div class="tl-action">📦 Prepara marmita (se não fez antes)</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">07h00</div>
+        <div class="tl-action">🚶 Sai para o trabalho</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">10h00</div>
+        <div class="tl-action">🥚 Lanche no trabalho</div>
+        <div class="tl-note">Ovos cozidos ou fruta + proteína</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">13h00</div>
+        <div class="tl-action">🍛 Almoço</div>
+        <div class="tl-note">Marmita completa</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">16h30</div>
+        <div class="tl-action">⚡ Pré-treino</div>
+        <div class="tl-note">Batata-doce + ovo ou atum</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">17h00</div>
+        <div class="tl-action">🏃 Trabalho termina / deslocamento</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">18h00</div>
+        <div class="tl-action">💪 Academia</div>
+        <div class="tl-note">50–60 min de treino focado</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">19h15</div>
+        <div class="tl-action">🍽️ Pós-treino</div>
+        <div class="tl-note">Refeição completa: proteína + carbo</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">20h00</div>
+        <div class="tl-action">🎯 Tempo livre / tarefas pessoais</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">21h30</div>
+        <div class="tl-action">🌙 Ceia leve</div>
+        <div class="tl-note">Iogurte + aveia + amendoim</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-time">22h00</div>
+        <div class="tl-action">📵 Tela desligada. Desaceleração.</div>
+      </div>
+      <div class="tl-item" style="margin-bottom:0;">
+        <div class="tl-time">22h30</div>
+        <div class="tl-action">😴 Dorme</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ===================== DISCIPLINA ===================== -->
+<div id="disciplina" class="section">
+  <div class="section-header">
+    <div class="section-icon icon-red">🔥</div>
+    <div>
+      <div class="section-title">Disciplina & Constância</div>
+      <div class="section-sub">O que fazer quando bater o desânimo</div>
+    </div>
+  </div>
+
+  <div class="tip red">
+    <div class="tip-title">Quando estiver cansado</div>
+    <p>O cansaço raramente é físico — quase sempre é mental. Vai para a academia mesmo que seja para fazer 60% do treino. Presença vale mais que intensidade nesse momento. Um treino fraco é infinitamente melhor que zero treino.</p>
+  </div>
+
+  <div class="tip blue">
+    <div class="tip-title">Regra dos 2 minutos</div>
+    <p>Se não quer ir treinar, coloca o tênis e chega até a porta da academia. Só isso. O cérebro toma o impulso depois.</p>
+  </div>
+
+  <div class="tip green">
+    <div class="tip-title">Não quebre a corrente</div>
+    <p>Marca um X no calendário a cada dia que cumpriu a rotina. Não quebre a sequência. A motivação oscila — o sistema não pode oscilar.</p>
+  </div>
+
+  <div class="tip">
+    <div class="tip-title">Simplicidade é vantagem</div>
+    <p>Come as mesmas refeições toda semana enquanto estiver com orçamento apertado. Decisão reduzida = energia preservada = consistência maior.</p>
+  </div>
+
+  <div class="tip">
+    <div class="tip-title">Identidade, não objetivo</div>
+    <p>Não pense "quero ter um corpo bom." Pense "sou uma pessoa que treina e come bem." O comportamento segue a identidade. Quando você age como essa pessoa todos os dias, o resultado é consequência.</p>
+  </div>
+
+  <div class="tip green">
+    <div class="tip-title">Nos dias ruins</div>
+    <p>Reduz o padrão, mas não zera. Treino curto, refeição simples, dorme cedo. Amanhã você resetou.</p>
+  </div>
+
+  <div class="highlight" style="margin-top:20px; text-align:center;">
+    <p style="font-family:'Playfair Display', serif; font-size:18px; line-height:1.5; color:var(--accent2);">
+      "Consistência mediana ao longo de meses supera intensidade explosiva seguida de abandono."
+    </p>
+    <p style="margin-top:8px; font-size:12px; color:var(--muted);">Toda vez.</p>
+  </div>
+</div>
+
+<div class="footer">
+  <p>Feito para <strong>João</strong> · Plano de Reconstrução Física</p>
+  <p style="margin-top:4px; opacity:0.5;">Salve na tela inicial e execute.</p>
+</div>
+
+<script>
+  // Smooth scroll for nav pills
+  document.querySelectorAll('.nav-pill').forEach(pill => {
+    pill.addEventListener('click', function(e) {
+      e.preventDefault();
+      document.querySelectorAll('.nav-pill').forEach(p => p.classList.remove('active'));
+      this.classList.add('active');
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  // Highlight active section on scroll
+  const sections = document.querySelectorAll('.section[id]');
+  const pills = document.querySelectorAll('.nav-pill');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(section => {
+      if (window.scrollY >= section.offsetTop - 100) current = section.getAttribute('id');
+    });
+    pills.forEach(pill => {
+      pill.classList.remove('active');
+      if (pill.getAttribute('href') === '#' + current) pill.classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>
